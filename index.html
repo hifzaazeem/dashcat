@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAT Exam Preparation Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.3)); }
+            to { filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.5)); }
+        }
+
+        .motivation-quote {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .motivation-quote:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .motivation-quote::before {
+            content: '"';
+            font-size: 4em;
+            color: rgba(255, 255, 255, 0.3);
+            position: absolute;
+            top: -10px;
+            left: 15px;
+        }
+
+        .quote-button {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .quote-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            background: transparent;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .exam-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+        }
+
+        .info-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .info-card p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .progress-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .progress-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .progress-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .progress-card h3 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            border-radius: 15px;
+            transition: width 0.8s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .section h2 {
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 3px solid #4ecdc4;
+            padding-bottom: 10px;
+            position: relative;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+        }
+
+        .topic {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .topic:hover {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-color: #4ecdc4;
+            transform: translateX(5px);
+        }
+
+        .topic.completed {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-color: #28a745;
+        }
+
+        .topic-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .topic-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .video-count {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1976d2;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            border: 1px solid #2196f3;
+        }
+
+        .checkbox {
+            width: 25px;
+            height: 25px;
+            border: 3px solid #4ecdc4;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .checkbox:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+        }
+
+        .checkbox.checked {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border-color: #4ecdc4;
+            animation: checkPulse 0.5s ease;
+        }
+
+        @keyframes checkPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .schedule-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .schedule-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .schedule-header h2 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .schedule-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .schedule-tab {
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+        }
+
+        .schedule-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .schedule-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .schedule-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .schedule-card:hover::before {
+            left: 100%;
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .schedule-card h4 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .schedule-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .schedule-card li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .schedule-card li:last-child {
+            border-bottom: none;
+        }
+
+        .mock-schedule {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .mock-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .calendar-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            border-color: #4ecdc4;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.mock-day {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.mock-day::after {
+            content: 'MOCK';
+            position: absolute;
+            bottom: 2px;
+            font-size: 0.6em;
+            opacity: 0.8;
+        }
+
+        .calendar-day.completed-mock {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .calendar-day.completed-mock::after {
+            content: '✓';
+            position: absolute;
+            bottom: 2px;
+            font-size: 0.8em;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .achievement-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .badge.gold {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+        }
+
+        .badge.silver {
+            background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+            color: #333;
+        }
+
+        .badge.bronze {
+            background: linear-gradient(135deg, #cd7f32, #daa520);
+            color: white;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                text-align: center;
+            }
+            
+            .sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mock-calendar {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 5px;
+            }
+            
+            .calendar-day {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>🎯 CAT 2025 Warrior Dashboard</h1>
+            <div class="motivation-quote" id="motivationQuote">
+                "Success is not final, failure is not fatal: it is the courage to continue that counts." - Winston Churchill
+            </div>
+            <button class="quote-button" onclick="newQuote()">Get New Motivation! 🔥</button>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
+            <div class="tab" onclick="showTab('topics')">📚 Topics</div>
+            <div class="tab" onclick="showTab('schedule')">📅 Schedule</div>
+            <div class="tab" onclick="showTab('mocks')">🎯 Mock Tests</div>
+            <div class="tab" onclick="showTab('revision')">🔄 Revision</div>
+            <div class="tab" onclick="showTab('stats')">📈 Analytics</div>
+        </div>
+
+        <div id="overview-tab" class="tab-content active">
+            <div class="exam-info">
+                <div class="info-card">
+                    <h3 id="days-left">60</h3>
+                    <p>Days Remaining</p>
+                </div>
+                <div class="info-card">
+                    <h3>Nov 30</h3>
+                    <p>Exam Date</p>
+                </div>
+                <div class="info-card">
+                    <h3 id="hours-studied">0</h3>
+                    <p>Hours Studied</p>
+                </div>
+                <div class="info-card">
+                    <h3 id="videos-completed">0</h3>
+                    <p>Videos Done</p>
+                </div>
+                <div class="info-card">
+                    <h3 id="streak-count">0</h3>
+                    <p>Day Streak</p>
+                </div>
+            </div>
+
+            <div class="progress-overview">
+                <div class="progress-card">
+                    <h3>🎯 Overall Progress</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="overall-progress" style="width: 0%"></div>
+                    </div>
+                    <p><span id="overall-percentage">0</span>% Complete</p>
+                </div>
+                <div class="progress-card">
+                    <h3>🔢 Quantitative Aptitude</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quant-progress" style="width: 0%"></div>
+                    </div>
+                    <p><span id="quant-percentage">0</span>% Complete</p>
+                </div>
+                <div class="progress-card">
+                    <h3>🧠 LRDI</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="lrdi-progress" style="width: 0%"></div>
+                    </div>
+                    <p><span id="lrdi-percentage">0</span>% Complete</p>
+                </div>
+                <div class="progress-card">
+                    <h3>📖 Verbal Ability</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="verbal-progress" style="width: 0%"></div>
+                    </div>
+                    <p><span id="verbal-percentage">0</span>% Complete</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="topics-tab" class="tab-content">
+            <div class="sections">
+                <div class="section">
+                    <h2>🔢 Quantitative Aptitude (Priority)</h2>
+                    <div id="quant-topics"></div>
+                </div>
+                <div class="section">
+                    <h2>🧠 Logical Reasoning & Data Interpretation</h2>
+                    <div id="lrdi-topics"></div>
+                </div>
+                <div class="section">
+                    <h2>📖 Verbal Ability</h2>
+                    <div id="verbal-topics"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="schedule-tab" class="tab-content">
+            <div class="schedule-container">
+                <div class="schedule-header">
+                    <h2>📅 60-Day Master Schedule</h2>
+                    <p>Optimized for your strengths in VARC and LRDI</p>
+                </div>
+                
+                <div class="schedule-tabs">
+                    <div class="schedule-tab active" onclick="showSchedule('phase1')">Phase 1 (Days 1-30)</div>
+                    <div class="schedule-tab" onclick="showSchedule('phase2')">Phase 2 (Days 31-60)</div>
+                </div>
+
+                <div id="phase1-schedule" class="schedule-grid">
+                    <div class="schedule-card">
+                        <h4>🌅 Week 1-2: Foundation</h4>
+                        <ul>
+                            <li>🔢 Quant: 2.5 hours/day</li>
+                            <li>🧠 LRDI: 1 hour/day</li>
+                            <li>📖 Verbal: 30 min/day</li>
+                            <li>📚 Focus: Number System, Algebra</li>
+                        </ul>
+                    </div>
+                    <div class="schedule-card">
+                        <h4>⚡ Week 3-4: Acceleration</h4>
+                        <ul>
+                            <li>🔢 Quant: 2 hours/day</li>
+                            <li>🧠 LRDI: 1.5 hours/day</li>
+                            <li>📖 Verbal: 45 min/day</li>
+                            <li>📚 Focus: Geometry, Probability</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="phase2-schedule" class="schedule-grid" style="display: none;">
+                    <div class="schedule-card">
+                        <h4>🎯 Week 5-6: Practice</h4>
+                        <ul>
+                            <li>🔢 Quant: 1.5 hours/day</li>
+                            <li>🧠 LRDI: 1.5 hours/day</li>
+                            <li>📖 Verbal: 1 hour/day</li>
+                            <li>📝 Mock Tests: 2 per week</li>
+                        </ul>
+                    </div>
+                    <div class="schedule-card">
+                        <h4>🚀 Week 7-8: Mastery</h4>
+                        <ul>
+                            <li>🔢 Quant: 1 hour/day</li>
+                            <li>🧠 LRDI: 1 hour/day</li>
+                            <li>📖 Verbal: 1 hour/day</li>
+                            <li>📝 Mock Tests: 3 per week</li>
+                            <li>🔄 Revision: 1 hour/day</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mocks-tab" class="tab-content">
+            <div class="mock-schedule">
+                <div class="schedule-header">
+                    <h2>🎯 30-Day Mock Test Schedule</h2>
+                    <p>Strategic mock tests for the final sprint</p>
+                </div>
+                
+                <div class="mock-calendar">
+                    <div class="calendar-header">Sun</div>
+                    <div class="calendar-header">Mon</div>
+                    <div class="calendar-header">Tue</div>
+                    <div class="calendar-header">Wed</div>
+                    <div class="calendar-header">Thu</div>
+                    <div class="calendar-header">Fri</div>
+                    <div class="calendar-header">Sat</div>
+                </div>
+                <div class="mock-calendar" id="mock-calendar">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+                
+                <div class="schedule-grid" style="margin-top: 30px;">
+                    <div class="schedule-card">
+                        <h4>📊 Week 1-2: Sectional Tests</h4>
+                        <ul>
+                            <li>🔢 Quant Sectionals: 4 tests</li>
+                            <li>🧠 LRDI Sectionals: 4 tests</li>
+                            <li>📖 Verbal Sectionals: 2 tests</li>
+                        </ul>
+                    </div>
+                    <div class="schedule-card">
+                        <h4>🎯 Week 3-4: Full Mocks</h4>
+                        <ul>
+                            <li>📝 Full CAT Mocks: 8 tests</li>
+                            <li>⏰ Time: 3 hours each</li>
+                            <li>📊 Analysis: 2 hours each</li>
+                            <li>🎯 Target: 99+ percentile</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="revision-tab" class="tab-content">
+            <div class="schedule-container">
+                <div class="schedule-header">
+                    <h2>🔄 Revision Schedule</h2>
+                    <p>Spaced repetition for maximum retention</p>
+                </div>
+                
+                <div class="schedule-grid">
+                    <div class="schedule-card">
+                        <h4>📅 Daily Revision (15 min)</h4>
+                        <ul>
+                            <li>🔢 5 Quant formulas</li>
+                            <li>🧠 3 LRDI patterns</li>
+                            <li>📖 5 Vocab words</li>
+                            <li>📝 Error log review</li>
+                        </ul>
+                    </div>
+                    <div class="schedule-card">
+                        <h4>📅 Weekly Revision (2 hours)</h4>
+                        <ul>
+                            <li>🔢 Weak Quant topics</li>
+                            <li>🧠 Puzzle solving tricks</li>
+                            <li>📖 RC speed techniques</li>
+                            <li>📊 Mock test analysis</li>
+                        </ul>
+                    </div>
+                    <div class="schedule-card">
+                        <h4>📅 Monthly Revision (4 hours)</h4>
+                        <ul>
+                            <li>🔢 All Quant concepts</li>
+                            <li>🧠 All LRDI patterns</li>
+                            <li>📖 Grammar rules</li>
+                            <li>📝 Strategy refinement</li>
+                        </ul>
+                    </div>
+                    <div class="schedule-card">
+                        <h4>📅 Final Week Revision</h4>
+                        <ul>
+                            <li>🔢 Formula sheets only</li>
+                            <li>🧠 Quick puzzles</li>
+                            <li>📖 Vocab flashcards</li>
+                            <li>😌 Stress management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="stats-tab" class="tab-content">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-videos">94</div>
+                    <div class="stat-label">Total Videos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="estimated-hours">71</div>
+                    <div class="stat-label">Estimated Hours</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="daily-target">1.2</div>
+                    <div class="stat-label">Hours/Day Target</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completion-rate">0</div>
+                    <div class="stat-label">Completion %</div>
+                </div>
+            </div>
+            
+            <div class="achievement-badges" id="achievements">
+                <!-- Badges will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <button class="floating-action" onclick="celebrateProgress()" title="Celebrate Progress!">🎉</button>
+    
+    <div class="notification" id="notification">
+        <span id="notification-text">Great job! Keep going! 🔥</span>
+    </div>
+
+    <script>
+        // Motivational quotes
+        const motivationalQuotes = [
+            "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
+            "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+            "It is during our darkest moments that we must focus to see the light. - Aristotle",
+            "The only impossible journey is the one you never begin. - Tony Robbins",
+            "In the middle of difficulty lies opportunity. - Albert Einstein",
+            "Believe you can and you're halfway there. - Theodore Roosevelt",
+            "The only way to do great work is to love what you do. - Steve Jobs",
+            "Success is walking from failure to failure with no loss of enthusiasm. - Winston Churchill",
+            "The difference between ordinary and extraordinary is that little extra. - Jimmy Johnson",
+            "Your limitation—it's only your imagination.",
+            "Push yourself, because no one else is going to do it for you.",
+            "Sometimes later becomes never. Do it now.",
+            "Great things never come from comfort zones.",
+            "Dream it. Wish it. Do it.",
+            "Success doesn't just find you. You have to go out and get it.",
+            "The harder you work for something, the greater you'll feel when you achieve it.",
+            "Dream bigger. Do bigger.",
+            "Don't stop when you're tired. Stop when you're done.",
+            "Wake up with determination. Go to bed with satisfaction.",
+            "Do something today that your future self will thank you for."
+        ];
+
+        // CAT preparation data
+        const catData = {
+            "Quantitative Aptitude": {
+                "Number System": 17,
+                "Averages, Ratios and Proportions": 5,
+                "Mixtures and Solutions": 2,
+                "Profit and Loss": 3,
+                "Interest": 2,
+                "Inequalities": 3,
+                "Linear Equations": 4,
+                "Quadratic Equations": 4,
+                "Progressions and Series": 6,
+                "Graphs and Stats": 8,
+                "Probability": 11,
+                "Venn Diagram": 3,
+                "Data Sufficiency": 2,
+                "Logarithms, Surds and Indices": 5
+            },
+            "Logical Reasoning and Data Interpretation": {
+                "Arrangement": 6,
+                "Puzzles": 3,
+                "Selection with Condition": 3,
+                "Games and Tournaments": 3,
+                "Truth Lie Concept": 2,
+                "2D-3D LR": 4,
+                "Quant based LR": 1,
+                "Scheduling": 1,
+                "Coins and Weights": 3,
+                "Miscellaneous LR": 1,
+                "DI Basics": 2,
+                "Charts": 1,
+                "Special Charts": 3,
+                "Table Based DI Sets": 2,
+                "Data change over a period": 3,
+                "DI with connected data sets": 1,
+                "Quant based DI": 1,
+                "Maxima-Minima": 1,
+                "Venn Diagram": 2,
+                "Miscellaneous DI": 1
+            },
+            "Verbal Ability": {
+                "Grammar and Sentence Correction": 12,
+                "RC": 14,
+                "Para Summary": 2,
+                "Para Completion": 3,
+                "Para Jumble": 4,
+                "Critical Reasoning": 3,
+                "Vocabulary": 3,
+                "Miscellaneous": 2
+            }
+        };
+
+        // Initialize variables
+        let progress = {};
+        let completedVideos = 0;
+        let totalVideos = 0;
+        let currentStreak = 0;
+        let mockResults = {};
+        let currentTab = 'overview';
+
+        // Calculate totals
+        Object.values(catData).forEach(section => {
+            Object.values(section).forEach(count => {
+                totalVideos += count;
+            });
+        });
+
+        // Initialize progress for each topic
+        Object.keys(catData).forEach(section => {
+            progress[section] = {};
+            Object.keys(catData[section]).forEach(topic => {
+                progress[section][topic] = false;
+            });
+        });
+
+        // Load saved data
+        const savedData = JSON.parse(localStorage.getItem('catDashboardData') || '{}');
+        if (savedData.progress) {
+            progress = savedData.progress;
+            currentStreak = savedData.streak || 0;
+            mockResults = savedData.mockResults || {};
+            updateStats();
+        }
+
+        // Tab switching function
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            const tabButtons = document.querySelectorAll('.tab');
+            tabButtons.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            currentTab = tabName;
+            
+            // Load specific tab content
+            if (tabName === 'mocks') {
+                generateMockCalendar();
+            } else if (tabName === 'stats') {
+                updateAchievements();
+            }
+        }
+
+        // Schedule switching function
+        function showSchedule(phase) {
+            document.getElementById('phase1-schedule').style.display = phase === 'phase1' ? 'grid' : 'none';
+            document.getElementById('phase2-schedule').style.display = phase === 'phase2' ? 'grid' : 'none';
+            
+            const tabs = document.querySelectorAll('.schedule-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // New quote function
+        function newQuote() {
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            document.getElementById('motivationQuote').textContent = randomQuote;
+            
+            // Add animation
+            const quoteElement = document.getElementById('motivationQuote');
+            quoteElement.style.transform = 'scale(0.95)';
+            quoteElement.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                quoteElement.style.transform = 'scale(1)';
+                quoteElement.style.opacity = '1';
+            }, 200);
+        }
+
+        // Create topic elements
+        function createTopicElement(sectionName, topicName, videoCount) {
+            const topicDiv = document.createElement('div');
+            topicDiv.className = `topic ${progress[sectionName][topicName] ? 'completed' : ''}`;
+            topicDiv.innerHTML = `
+                <span class="topic-name">${topicName}</span>
+                <div class="topic-progress">
+                    <span class="video-count">${videoCount} videos</span>
+                    <div class="checkbox ${progress[sectionName][topicName] ? 'checked' : ''}" 
+                         onclick="toggleTopic('${sectionName}', '${topicName}')"></div>
+                </div>
+            `;
+            return topicDiv;
+        }
+
+        // Toggle topic completion
+        function toggleTopic(section, topic) {
+            const wasCompleted = progress[section][topic];
+            progress[section][topic] = !progress[section][topic];
+            
+            // Update streak
+            if (!wasCompleted && progress[section][topic]) {
+                currentStreak++;
+                showNotification(`🔥 Great! ${currentStreak} day streak!`);
+            }
+            
+            saveData();
+            renderSections();
+            updateStats();
+            
+            // Celebrate milestone
+            if (completedVideos > 0 && completedVideos % 10 === 0) {
+                celebrateProgress();
+            }
+        }
+
+        // Render all sections
+        function renderSections() {
+            const sectionMappings = {
+                'Quantitative Aptitude': 'quant-topics',
+                'Logical Reasoning and Data Interpretation': 'lrdi-topics',
+                'Verbal Ability': 'verbal-topics'
+            };
+
+            Object.keys(catData).forEach(sectionName => {
+                const container = document.getElementById(sectionMappings[sectionName]);
+                if (container) {
+                    container.innerHTML = '';
+                    
+                    Object.keys(catData[sectionName]).forEach(topicName => {
+                        const videoCount = catData[sectionName][topicName];
+                        const topicElement = createTopicElement(sectionName, topicName, videoCount);
+                        container.appendChild(topicElement);
+                    });
+                }
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            completedVideos = 0;
+            let sectionStats = {
+                'Quantitative Aptitude': { completed: 0, total: 0 },
+                'Logical Reasoning and Data Interpretation': { completed: 0, total: 0 },
+                'Verbal Ability': { completed: 0, total: 0 }
+            };
+
+            Object.keys(catData).forEach(section => {
+                Object.keys(catData[section]).forEach(topic => {
+                    const videoCount = catData[section][topic];
+                    sectionStats[section].total += videoCount;
+                    
+                    if (progress[section][topic]) {
+                        sectionStats[section].completed += videoCount;
+                        completedVideos += videoCount;
+                    }
+                });
+            });
+
+            // Update overall progress
+            const overallPercentage = Math.round((completedVideos / totalVideos) * 100);
+            document.getElementById('overall-progress').style.width = overallPercentage + '%';
+            document.getElementById('overall-percentage').textContent = overallPercentage;
+
+            // Update section progress
+            const quantPercentage = Math.round((sectionStats['Quantitative Aptitude'].completed / sectionStats['Quantitative Aptitude'].total) * 100);
+            const lrdiPercentage = Math.round((sectionStats['Logical Reasoning and Data Interpretation'].completed / sectionStats['Logical Reasoning and Data Interpretation'].total) * 100);
+            const verbalPercentage = Math.round((sectionStats['Verbal Ability'].completed / sectionStats['Verbal Ability'].total) * 100);
+
+            document.getElementById('quant-progress').style.width = quantPercentage + '%';
+            document.getElementById('quant-percentage').textContent = quantPercentage;
+            document.getElementById('lrdi-progress').style.width = lrdiPercentage + '%';
+            document.getElementById('lrdi-percentage').textContent = lrdiPercentage;
+            document.getElementById('verbal-progress').style.width = verbalPercentage + '%';
+            document.getElementById('verbal-percentage').textContent = verbalPercentage;
+
+            // Update counters
+            document.getElementById('videos-completed').textContent = completedVideos;
+            document.getElementById('hours-studied').textContent = Math.round((completedVideos * 0.75) * 10) / 10;
+            document.getElementById('streak-count').textContent = currentStreak;
+            document.getElementById('completion-rate').textContent = overallPercentage;
+
+            // Update days left
+            const examDate = new Date('2025-11-30');
+            const today = new Date();
+            const daysLeft = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+            document.getElementById('days-left').textContent = Math.max(0, daysLeft);
+        }
+
+        // Generate mock calendar
+        function generateMockCalendar() {
+            const calendar = document.getElementById('mock-calendar');
+            if (!calendar) return;
+            
+            calendar.innerHTML = '';
+            
+            const mockDays = [3, 6, 10, 13, 17, 20, 24, 27]; // Mock test days
+            
+            for (let day = 1; day <= 30; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                if (mockDays.includes(day)) {
+                    dayElement.classList.add('mock-day');
+                    dayElement.onclick = () => toggleMockComplete(day);
+                    
+                    if (mockResults[day]) {
+                        dayElement.classList.add('completed-mock');
+                        dayElement.classList.remove('mock-day');
+                    }
+                }
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Toggle mock completion
+        function toggleMockComplete(day) {
+            mockResults[day] = !mockResults[day];
+            saveData();
+            generateMockCalendar();
+            
+            if (mockResults[day]) {
+                showNotification(`🎯 Mock test ${day} completed! Great work!`);
+            }
+        }
+
+        // Update achievements
+        function updateAchievements() {
+            const achievements = document.getElementById('achievements');
+            if (!achievements) return;
+            
+            achievements.innerHTML = '';
+            
+            const badges = [];
+            
+            // Progress badges
+            if (completedVideos >= 10) badges.push({ text: '🎯 First 10 Videos', class: 'bronze' });
+            if (completedVideos >= 25) badges.push({ text: '🚀 Quarter Done', class: 'silver' });
+            if (completedVideos >= 50) badges.push({ text: '⭐ Half Way Hero', class: 'gold' });
+            if (completedVideos >= 75) badges.push({ text: '🏆 Three Quarter Champion', class: 'gold' });
+            if (completedVideos >= 94) badges.push({ text: '👑 Completion King', class: 'gold' });
+            
+            // Streak badges
+            if (currentStreak >= 7) badges.push({ text: '🔥 Week Warrior', class: 'bronze' });
+            if (currentStreak >= 14) badges.push({ text: '💪 Fortnight Fighter', class: 'silver' });
+            if (currentStreak >= 30) badges.push({ text: '🏅 Monthly Master', class: 'gold' });
+            
+            // Mock badges
+            const completedMocks = Object.values(mockResults).filter(Boolean).length;
+            if (completedMocks >= 5) badges.push({ text: '🎯 Mock Master', class: 'silver' });
+            if (completedMocks >= 10) badges.push({ text: '🎪 Mock Mogul', class: 'gold' });
+            
+            badges.forEach(badge => {
+                const badgeElement = document.createElement('div');
+                badgeElement.className = `badge ${badge.class}`;
+                badgeElement.textContent = badge.text;
+                achievements.appendChild(badgeElement);
+            });
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Celebrate progress
+        function celebrateProgress() {
+            const messages = [
+                '🎉 Amazing progress! Keep it up!',
+                '🔥 You\'re on fire! Don\'t stop now!',
+                '⭐ Stellar performance! You\'re a star!',
+                '🚀 Rocket speed learning! Awesome!',
+                '💪 You\'re getting stronger every day!',
+                '🏆 Champion mindset! Victory ahead!',
+                '🎯 Perfect aim! Target in sight!',
+                '⚡ Lightning fast progress! Incredible!'
+            ];
+            
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            showNotification(randomMessage);
+        }
+
+        // Save data
+        function saveData() {
+            const data = {
+                progress: progress,
+                streak: currentStreak,
+                mockResults: mockResults,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('catDashboardData', JSON.stringify(data));
+        }
+
+        // Initialize dashboard
+        function initializeDashboard() {
+            renderSections();
+            updateStats();
+            generateMockCalendar();
+            updateAchievements();
+            
+            // Set random quote on load
+            newQuote();
+            
+            // Add entrance animations
+            const cards = document.querySelectorAll('.info-card, .progress-card, .section, .stat-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 50);
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+        
+        // Auto-save every minute
+        setInterval(saveData, 60000);
+    </script>
+</body>
+</html>
